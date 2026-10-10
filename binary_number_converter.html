@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Number System Converter</title>
+<style>
+:root{--bg:#0b1020;--panel:#141c32;--panel2:#1a2540;--text:#f3f6ff;--muted:#aab6d3;--accent:#7c9cff;--accent2:#62e6c5;--line:#2c3858}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top right,#202f59 0,#0b1020 45%);color:var(--text);min-height:100vh;padding:24px 14px}
+main{max-width:900px;margin:0 auto}
+header{text-align:center;padding:22px 10px 28px}
+.logo{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#a28cff);font-size:26px;font-weight:900;color:#091126;box-shadow:0 12px 35px #7c9cff33}
+h1{font-size:clamp(27px,5vw,42px);margin:15px 0 8px;letter-spacing:-1px}
+header p{color:var(--muted);margin:0;font-size:15px}
+.card{background:linear-gradient(145deg,#17213b,#11192c);border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,30px);box-shadow:0 20px 60px #0003}
+label{display:block;font-size:14px;font-weight:700;margin-bottom:9px}
+select,input,button{font:inherit}
+select,input{width:100%;background:#0c1326;color:var(--text);border:1px solid #344365;border-radius:12px;padding:14px 13px;outline:none}
+select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c9cff22}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.input-wrap{margin-top:19px}
+.actions{display:flex;gap:10px;margin-top:15px;flex-wrap:wrap}
+button{border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;transition:transform .15s,opacity .15s}
+button:active{transform:scale(.98)}
+.primary{background:linear-gradient(135deg,var(--accent),#a28cff);color:#081127;flex:1}
+.secondary{background:#253250;color:var(--text);border:1px solid #3a496b}
+.error{color:#ff9fba;font-size:13px;min-height:19px;margin-top:10px}
+.results{margin-top:24px}
+.results h2{font-size:18px;margin:0 0 13px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result{background:#0c1428;border:1px solid var(--line);border-radius:15px;padding:15px;min-width:0}
+.result .top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px}
+.result output{display:block;font-size:clamp(18px,3vw,25px);font-weight:800;overflow-wrap:anywhere;margin-top:11px;line-height:1.35}
+.copy{font-size:11px;padding:6px 9px;background:#263654;color:#dce5ff;border-radius:8px}
+.note{color:var(--muted);font-size:13px;line-height:1.6;margin:18px 2px 0}
+footer{text-align:center;color:#8794b5;font-size:12px;padding:22px 0 6px}
+@media(max-width:560px){.grid,.result-grid{grid-template-columns:1fr}.card{border-radius:18px}.actions button{width:100%}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="logo">01</div>
+  <h1>Binary Number Converter</h1>
+  <p>A simple, fast tool for Digital Electronics students</p>
+</header>
+<section class="card" aria-label="Number converter">
+  <div class="grid">
+    <div>
+      <label for="fromBase">Convert from</label>
+      <select id="fromBase">
+        <option value="2">Binary (Base 2)</option>
+        <option value="10" selected>Decimal (Base 10)</option>
+        <option value="8">Octal (Base 8)</option>
+        <option value="16">Hexadecimal (Base 16)</option>
+      </select>
+    </div>
+    <div>
+      <label for="toBase">Convert to</label>
+      <select id="toBase">
+        <option value="2" selected>Binary (Base 2)</option>
+        <option value="10">Decimal (Base 10)</option>
+        <option value="8">Octal (Base 8)</option>
+        <option value="16">Hexadecimal (Base 16)</option>
+      </select>
+    </div>
+  </div>
+  <div class="input-wrap">
+    <label for="numberInput">Enter your number</label>
+    <input id="numberInput" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Example: 101101 or 45">
+  </div>
+  <div class="actions">
+    <button class="primary" id="convertBtn">Convert number</button>
+    <button class="secondary" id="swapBtn" type="button">⇄ Swap bases</button>
+    <button class="secondary" id="clearBtn" type="button">Clear</button>
+  </div>
+  <div class="error" id="error" role="status" aria-live="polite"></div>
+  <div class="results">
+    <h2>Conversion results</h2>
+    <div class="result-grid">
+      <div class="result"><div class="top"><span>Binary · Base 2</span><button class="copy" data-copy="binary">Copy</button></div><output id="binary">—</output></div>
+      <div class="result"><div class="top"><span>Decimal · Base 10</span><button class="copy" data-copy="decimal">Copy</button></div><output id="decimal">—</output></div>
+      <div class="result"><div class="top"><span>Octal · Base 8</span><button class="copy" data-copy="octal">Copy</button></div><output id="octal">—</output></div>
+      <div class="result"><div class="top"><span>Hexadecimal · Base 16</span><button class="copy" data-copy="hex">Copy</button></div><output id="hex">—</output></div>
+    </div>
+  </div>
+  <p class="note">Tip: Binary numbers use 0 and 1; octal uses digits 0–7; decimal uses 0–9; hexadecimal uses 0–9 and A–F. This converter supports whole numbers, including negative values.</p>
+</section>
+<footer>Digital Electronics · Experiential Learning Project</footer>
+</main>
+<script>
+const fromBase = document.getElementById('fromBase');
+const toBase = document.getElementById('toBase');
+const input = document.getElementById('numberInput');
+const error = document.getElementById('error');
+const outputIds = {2:'binary',10:'decimal',8:'octal',16:'hex'};
+const names = {2:'binary',10:'decimal',8:'octal',16:'hexadecimal'};
+function convert(){
+  const raw = input.value.trim().replaceAll('_','');
+  error.textContent = '';
+  if(!raw){error.textContent='Please enter a number first.';return;}
+  const base = Number(fromBase.value);
+  let digits = raw;
+  let sign = 1n;
+  if(digits.startsWith('-')){sign=-1n;digits=digits.slice(1);}
+  if(!digits){error.textContent='Please enter a valid number.';return;}
+  const valid = {2:/^[01]+$/,8:/^[0-7]+$/,10:/^[0-9]+$/,16:/^[0-9a-fA-F]+$/};
+  if(!valid[base].test(digits)){error.textContent=`That is not a valid ${names[base]} number (base ${base}).`;return;}
+  let value = 0n;
+  for(const ch of digits.toUpperCase()){
+    const digit = parseInt(ch,16);
+    value = value * BigInt(base) + BigInt(digit);
+  }
+  value *= sign;
+  for(const b of [2,10,8,16]){
+    const formatted = value.toString(b).toUpperCase();
+    document.getElementById(outputIds[b]).textContent = formatted;
+  }
+}
+document.getElementById('convertBtn').addEventListener('click',convert);
+input.addEventListener('keydown',e=>{if(e.key==='Enter')convert()});
+fromBase.addEventListener('change',()=>{input.placeholder = `Enter a base-${fromBase.value} number`;if(input.value)convert()});
+toBase.addEventListener('change',()=>{if(input.value)convert()});
+document.getElementById('swapBtn').addEventListener('click',()=>{
+  const old=fromBase.value;fromBase.value=toBase.value;toBase.value=old;
+  if(input.value)convert();
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  input.value='';error.textContent='';
+  for(const id of Object.values(outputIds))document.getElementById(id).textContent='—';
+  input.focus();
+});
+document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{
+  const id=outputIds[({binary:2,decimal:10,octal:8,hex:16})[btn.dataset.copy]];
+  const text=document.getElementById(id).textContent;
+  if(text==='—')return;
+  try{await navigator.clipboard.writeText(text);btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1200)}
+  catch{error.textContent='Copy is unavailable in this browser. Select the result to copy it.'}
+}));
+</script>
+</body>
+</html>
